@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
         <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
         <link href="../css/admin.css" rel="stylesheet" />
+        <link rel="stylesheet" href="../css/edit.css">
     </head>
     <body>
         <div class="container">
@@ -25,7 +26,7 @@
                 </div>
 
                 <div class="sidebar">
-                    <a href="#" class="active">
+                    <a href="../admin/admin.html">
                         <span class="material-icons-sharp">grid_view</span>
                         <h3>Dashboard</h3>
                     </a>
@@ -41,7 +42,7 @@
                         <span class="material-symbols-sharp">install_mobile</span>
                         <h3>Referrals</h3>
                     </a>
-                    <a href="../admin/admin_jobposting.html">
+                    <a href="#" class="active">
                     <span class="material-icons-sharp">assignment_returned</span>
                         <h3>Job Posting</h3>
                     </a>
@@ -67,105 +68,45 @@
                     <span id="time"></span>
                 </div>
 
-                <div class="insights">
-                    <div class="applicants1">
-                        <span class="material-icons-sharp">analytics</span>
-                        <div class="middle">
-                            <div class="lef">
-                                <h3>Total Applicants Per Day</h3>
-                                <h1>12</h1>
-                            </div>
-                            <div class="progress">
-                                <svg>
-                                    <circle cx='38' cy='38' r='36'></circle>
-                                </svg>
-                                <div class="number">
-                                    <p>4%</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="applicants2">
-                    <span class="material-icons-sharp">query_stats</span>
-                        <div class="middle">
-                            <div class="lef">
-                                <h3>Total Applicants Per Month</h3>
-                                <h1>148</h1>
-                            </div>
-                            <div class="progress">
-                                <svg>
-                                    <circle cx='38' cy='38' r='36'></circle>
-                                </svg>
-                                <div class="number">
-                                    <p>10%</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="applicants3">
-                    <span class="material-icons-sharp">insights</span>
-                        <div class="middle">
-                            <div class="lef">
-                                <h3>Total Applicants Per Year</h3>
-                                <h1>1,002</h1>
-                            </div>
-                            <div class="progress">
-                                <svg>
-                                    <circle cx='38' cy='38' r='36'></circle>
-                                </svg>
-                                <div class="number">
-                                    <p>100%</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="top-applicants">
-                    <h2 style="margin: 10px;">Top Applicants</h2>
+                    <h2 style="margin: 10px;">Job Posted</h2>
                     <table>
                         <thead>
                             <tr>
-                                <th>Title/Position</th>
+                                <th>Title/Position Summary</th>
                                 <th>Rank</th>
                                 <th>Department</th>
-                                <th>Name</th>
-                                <th>Grade</th>
-                                <th>Status</th>
+                                <th>Hiring Start</th>
+                                <th>Hiring Deadline</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="job">
+                            <tr>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a href="#">Show All</a>
+                    
+                    <h2 style="margin: 10px;">Department</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Department</th>
+                                <th>Department Name</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>College of Business Administration - Teacher</td>
-                                <td>Teacher</td>
-                                <td>CBA</td>
-                                <td>Eduardo R. Garpo</td>
-                                <td>9.8 ORG</td>
-                                <td class="warning">Pending</td>
-                                <td><a href="#" class="info">View</a></td>
-                            </tr>
-                            <tr>
-                                <td>College of Business Administration - Assistant Dean</td>
-                                <td>Assistant Dean</td>
-                                <td>CBA</td>
-                                <td>Jay R. Pon</td>
-                                <td>9.9 ORG</td>
-                                <td class="danger">Processing</td>
-                                <td><a href="#" class="info">View</a></td>
-                            </tr>
-                            <tr>
-                                <td>College of Computer Studies and System - Assistant Teacher</td>
-                                <td>Assistant Teacher</td>
-                                <td>CCSS</td>
-                                <td>Ruth G. Ong</td>
-                                <td>9.6 ORG</td>
-                                <td class="warning">Pending</td>
-                                <td><a href="#">View</a></td>
                             </tr>
                         </tbody>
                     </table>
-                    <a href="#">Show All</a>
+                    <div class="edit">
+                            <a href="#">Create Department</a>
+                            <a href="#">Edit Department</a>
+                            <a href="#">Delete Department</a>
+                    </div>
                 </div>
             </main>
             <div class="right">
@@ -283,16 +224,34 @@
                             <h3>12</h3>
                         </div>
                     </div>
-                    <div class="item add-department">
-                        <div>
-                            <span class="material-icons-sharp">add</span>
-                            <h3>Add Department</h3>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
         <script src="../dark.js"></script>
         <script src="../time.js"></script>
+        <script>
+            fetch("../conn.php")
+            .then((response) => {
+                if(!response.ok){
+                    throw new Error("Something went wrong!");
+                }
+
+                return response.json();
+            })
+            .then((data) => {
+                var newStr = data.replaceAll("array", "\n");
+                const array = newStr.split("\n");
+
+                array.forEach(arr => {
+                    const new_arr = arr.split(" ");
+                    const tr = document.createElement('tr');
+                    const trContent = '<td>' + new_arr[0].replaceAll("_", " ") + '</td><td>' + new_arr[1].replaceAll("_", " ") + '</td><td>' + new_arr[2].replaceAll("_", " ") + '</td><td>' + new_arr[3].replaceAll("_", " ") + '</td><td>' + new_arr[4].replaceAll("_", " ") + '</td><td><a href="#">View</a></td>'
+                    tr.innerHTML = trContent;
+                    document.getElementById('job').appendChild(tr);
+                })
+                alert("Hello " + array[1].replaceAll("_", " "));
+            })
+            .catch((error) => {});
+        </script>
     </body>
 </html>
